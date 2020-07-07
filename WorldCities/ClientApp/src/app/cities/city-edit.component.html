@@ -1,0 +1,107 @@
+<div class="city-edit">
+  <h1>{{title}}</h1>
+  <p *ngIf="!city && this.id"><em>Loading...</em></p>
+
+  <div class="form" [formGroup]="form" (ngSubmit)="onSubmit()" [hidden]="!city && this.id">
+    <div *ngIf="form.invalid && form.errors?.isDupeCity" class="alert alert-danger">
+      <strong>ERROR</strong>:
+      A city with the same <i>name</i>, <i>latitude</i>, <i>longitude</i>, and <i>country</i> already exists.
+    </div>
+    <div class="form-group">
+      <label for="name">City name:</label>
+      <br />
+      <input type="text" id="name"
+             formControlName="name" required
+             placeholder="City name..."
+             class="form-control" />
+
+      <div *ngIf="hasError('name')" class="invalid-feedback">
+        <div *ngIf="form.get('name').errors?.required">
+          Name is required.
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="lat">City latitude:</label>
+      <br />
+      <input type="number" id="lat"
+             formControlName="lat" required
+             placeholder="City latitude..."
+             class="form-control" />
+
+      <div *ngIf="hasError('lat')" class="invalid-feedback">
+        <div *ngIf="form.get('lat').errors?.required">
+          Latitude is required.
+        </div>
+        <div *ngIf="form.get('lat').errors?.pattern">
+          Latitude requires a postive or negative number with 0-4 decimal places.
+        </div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="lon">City longitude:</label>
+      <br />
+      <input type="number" id="lon"
+             formControlName="lon" required
+             placeholder="City longitude..."
+             class="form-control" />
+
+      <div *ngIf="hasError('lon')" class="invalid-feedback">
+        <div *ngIf="form.get('lon').errors?.required">
+          Longitude is required.
+        </div>
+        <div *ngIf="form.get('lon').errors?.pattern">
+          Longitude requires a postive or negative number with 0-4 decimal places.
+        </div>
+      </div>
+    </div>
+    <div class="form-group" *ngIf="countries">
+      <label for="countryId">Country</label>
+      <br />
+      <mat-form-field *ngIf="countries">
+        <mat-label>Select a Country...</mat-label>
+        <mat-select id="countryid" formControlName="countryId">
+          <mat-option *ngFor="let country of countries" [value]="country.id">
+            {{country.name}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div *ngIf="hasError('countryId')" class="invalid-feedback">
+        <div *ngIf="form.get('countryId').errors?.required">
+          Please select a Country.
+        </div>
+      </div>
+    </div>
+    <div class="form-group commands">
+      <button type="submit" (click)="onSubmit()" [disabled]="form.invalid" class="btn btn-success" *ngIf="id">Save</button>
+      <button type="submit" (click)="onSubmit()" class="btn btn-success" [disabled]="form.invalid" *ngIf="!id">Create</button>
+      <button type="submit" [routerLink]="['/cities']" class="btn btn-default">Cancel</button>
+    </div>
+  </div>
+  <div class="card bg-light mb-3">
+    <div class="card-header">Form Debug Info</div>
+    <div class="card-body">
+      <div class="card-text">
+        <div><strong>Form value:</strong></div>
+        <div class="help-block">
+          {{ form.value | json }}
+        </div>
+        <div class="mt-2"><strong>Form status:</strong></div>
+        <div class="help-block">
+          {{ form.status | json }}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="card bg-light mb-3">
+    <div class="card-header">Form Activity Log</div>
+    <div class="card-body">
+      <div class="card-text">
+        <div class="help-block">
+          <span *ngIf="activityLog" [innerHtml]="activityLog"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
